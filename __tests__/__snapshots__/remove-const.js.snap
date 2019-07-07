@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Transforms computed members 1`] = `
+"enum MyEnum {
+  A = 1,
+  B = A,
+  C,
+  D = C,
+  E = 1,
+  F,
+  G = A * E,
+  H = A ** B ** C,
+  I = A << 20,
+}"
+`;
+
+exports[`Transforms no initializers 1`] = `
+"enum Direction {
+  Left,
+  Right,
+  Down,
+  Up,
+}
+;"
+`;
+
+exports[`Transforms string members 1`] = `
+"enum Enum {
+  A = 1,
+  B = A,
+  C = '',
+  D = C,
+  E = 1,
+  F,
+}"
+`;
