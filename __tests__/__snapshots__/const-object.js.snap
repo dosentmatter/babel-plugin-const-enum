@@ -1,5 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Transforms chained computed members 1`] = `
+"const MyEnum = {
+  A: 1,
+  B: 2,
+  C: 3,
+  D: 3,
+  E: 9,
+  F: 10,
+  G: 90,
+  H: 91,
+  I: 95420416
+};"
+`;
+
 exports[`Transforms computed members 1`] = `
 "const MyEnum = {
   A: 1,
