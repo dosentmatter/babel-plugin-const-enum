@@ -57,7 +57,7 @@ const TSEnumMembersToObjectProperties = (memberPaths) => {
 
           tsEnumMemberPath.get('initializer')
             .traverse(
-              evalConstEnumMemberAccessVisitor,
+              accessConstEnumMemberVisitor,
               { constEnum },
             );
           value = eval(generate(tsEnumMember.initializer).code);
@@ -107,7 +107,7 @@ const validateConstEnumMemberAccess = (path, value)  => {
   }
 };
 
-const evalConstEnumMemberAccessVisitor = {
+const accessConstEnumMemberVisitor = {
   enter(path) {
     if (types.isIdentifier(path.node)) {
       const constEnum = this.constEnum;
