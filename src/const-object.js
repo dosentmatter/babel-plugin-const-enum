@@ -46,7 +46,7 @@ const TSEnumMembersToObjectProperties = (memberPaths) => {
           types.isIdentifier(tsEnumMember.initializer)
         ) {
           value = constEnum[tsEnumMember.initializer.name];
-          validateConstEnumMemberAccess(value);
+          validateConstEnumMemberAccess(tsEnumMemberPath, value);
         } else if (
           isNumericUnaryExpression(tsEnumMember.initializer) ||
           isNumericBinaryExpression(tsEnumMember.initializer)
@@ -101,7 +101,7 @@ const isNumericBinaryExpression = node => (
     new Set(['+', '-', '/', '%', '*', '**', '&', '|', '>>', '>>>', '<<', '^']).has(node.operator)
 );
 
-const validateConstEnumMemberAccess = (value)  => {
+const validateConstEnumMemberAccess = (path, value)  => {
   if (value === undefined) {
     throw path.buildCodeFrameError('Enum initializer identifier must reference a previously defined enum member.');
   }
@@ -112,7 +112,7 @@ const evalConstEnumMemberAccessVisitor = {
     if (types.isIdentifier(path.node)) {
       const constEnum = this.constEnum;
       const value = constEnum[path.node.name];
-      validateConstEnumMemberAccess(value);
+      validateConstEnumMemberAccess(path, value);
 
       path.replaceWith(types.numericLiteral(value));
       path.skip();
