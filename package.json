@@ -18,7 +18,7 @@
   ],
   "scripts": {
     "build": "babel src --out-dir lib",
-    "prepublishOnly": "npm run build",
+    "prepublishOnly": "yarn run build",
     "test": "jest"
   },
   "peerDependencies": {
