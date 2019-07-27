@@ -33,7 +33,6 @@
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.0",
     "@babel/generator": "^7.5.0",
-    "@babel/helper-plugin-test-runner": "^7.1.0",
     "@babel/preset-env": "^7.5.0",
     "babel-jest": "^24.8.0",
     "jest": "^24.8.0"
