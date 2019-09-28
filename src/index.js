@@ -10,7 +10,7 @@ export default declare((api, { transform = 'removeConst' }) => {
   let visitor;
   if (transform === 'removeConst') {
     visitor = removeConst;
-  } else if (transform=== 'constObject') {
+  } else if (transform === 'constObject') {
     visitor = constObject;
   } else {
     throw Error('transform option must be removeConst|constObject');

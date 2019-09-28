@@ -3,5 +3,5 @@ export default {
     if (path.node.const) {
       path.node.const = false;
     }
-  }
+  },
 };

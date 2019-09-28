@@ -19,7 +19,8 @@
   "scripts": {
     "build": "babel src --out-dir lib",
     "prepublishOnly": "yarn run build",
-    "test": "jest"
+    "test": "jest",
+    "prettier-fix": "prettier --write src/**/*.js"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0-0",
@@ -35,7 +36,8 @@
     "@babel/generator": "^7.5.0",
     "@babel/preset-env": "^7.5.0",
     "babel-jest": "^24.8.0",
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2"
   },
   "files": [
     "lib"
