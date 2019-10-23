@@ -18,7 +18,7 @@ yarn add babel-plugin-const-enum --dev
 
 ## Usage
 
-### `removeConst` (default)
+### `transform: removeConst` (default)
 
 Removes the `const` keyword to use regular `enum`.
 Can be used in a slower dev build to allow `const`, while prod still uses `tsc`.
@@ -77,7 +77,7 @@ Or Explicitly:
 }
 ```
 
-### `constObject`
+### `transform: constObject`
 
 Transforms into a `const` object literal.
 Can be further compressed using Uglify/Terser to inline `enum` access.
