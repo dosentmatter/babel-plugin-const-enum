@@ -124,3 +124,21 @@ const MyEnum = {
   ]
 }
 ```
+
+## Troubleshooting
+
+### `SyntaxError`
+
+You may be getting a `SyntaxError` because you are running this plugin on
+non-TypeScript source. You might have run into this problem in `react-native`,
+see:<br>
+[babel-plugin-const-enum#2](https://github.com/dosentmatter/babel-plugin-const-enum/issues/2)<br>
+[babel-plugin-const-enum#3](https://github.com/dosentmatter/babel-plugin-const-enum/issues/3)
+
+This seems to be caused by `react-native` transpiling
+[`flow`](https://flow.org/) code in `node_modules`.
+To fix this issue, please use
+[`babel-preset-const-enum`](https://github.com/dosentmatter/babel-preset-const-enum)
+to only run `babel-plugin-const-enum` on TypeScript files.
+If you wish to fix the issue manually, check out the
+[solution in babel-plugin-const-enum#2](https://github.com/dosentmatter/babel-plugin-const-enum/issues/2#issuecomment-542859348).
