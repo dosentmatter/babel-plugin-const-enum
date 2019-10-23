@@ -18,6 +18,31 @@ yarn add babel-plugin-const-enum --dev
 
 ## Usage
 
+You are most likely using
+[`@babel/preset-typescript`](https://babeljs.io/docs/en/babel-preset-typescript)
+or
+[`@babel/plugin-transform-typescript`](https://babeljs.io/docs/en/babel-plugin-transform-typescript)
+as along with this plugin.
+
+If you are using `@babel/preset-typescript`, then nothing special needs to be
+done since
+[plugins run before presets](https://babeljs.io/docs/en/plugins/#plugin-ordering).
+
+If you are using `@babel/plugin-transform-typescript`, then make sure that
+`babel-plugin-const-enum` comes before
+`@babel/plugin-transform-typescript` in the plugin array so that
+`babel-plugin-const-enum` [runs first](https://babeljs.io/docs/en/plugins/#plugin-ordering).
+This plugin needs to run first to transform the `const enum`s into code that
+`@babel/plugin-transform-typescript` allows.
+
+`.babelrc`
+
+```json
+{
+  "plugins": ["const-enum", "@babel/transform-typescript"]
+}
+```
+
 ### `transform: removeConst` (default)
 
 Removes the `const` keyword to use regular `enum`.
