@@ -23,8 +23,7 @@
     "prettier-fix": "prettier --write src/**/*.js"
   },
   "peerDependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/generator": "^7.0.0-0"
+    "@babel/core": "^7.0.0-0"
   },
   "dependencies": {
     "@babel/helper-plugin-utils": "^7.0.0",
