@@ -68,7 +68,7 @@ const TSEnumMembersToObjectProperties = memberPaths => {
       value = currentValue;
     }
 
-    constEnum[tsEnumMember.id.name] = value;
+    constEnum[tsEnumMember.id.name || tsEnumMember.id.value] = value;
     if (Number.isFinite(value)) {
       valueNode = types.numericLiteral(value);
       currentValue = value + 1;
@@ -81,7 +81,7 @@ const TSEnumMembersToObjectProperties = memberPaths => {
     }
 
     return types.objectProperty(
-      types.identifier(tsEnumMember.id.name),
+      types.identifier(tsEnumMember.id.name || tsEnumMember.id.value),
       valueNode,
     );
   });
