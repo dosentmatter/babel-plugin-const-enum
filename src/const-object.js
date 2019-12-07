@@ -29,8 +29,23 @@ const TSEnumMembersToObjectProperties = memberPaths => {
   return memberPaths.map(tsEnumMemberPath => {
     const tsEnumMember = tsEnumMemberPath.node;
 
+    let key;
+    let keyNode;
+    if (types.isIdentifier(tsEnumMember.id)) {
+      key = tsEnumMember.id.name;
+      keyNode = types.identifier(key);
+    } else if (types.isStringLiteral(tsEnumMember.id)) {
+      key = tsEnumMember.id.value;
+      keyNode = types.stringLiteral(key);
+    } else if (types.isNumericLiteral(tsEnumMember.id)) {
+      throw tsEnumMemberPath.buildCodeFrameError(
+        'An enum member cannot have a numeric name.',
+      );
+    } else {
+      throw tsEnumMemberPath.buildCodeFrameError('Enum member expected.');
+    }
+
     let value;
-    let valueNode;
     if (tsEnumMember.initializer) {
       if (
         types.isNumericLiteral(tsEnumMember.initializer) ||
@@ -68,7 +83,9 @@ const TSEnumMembersToObjectProperties = memberPaths => {
       value = currentValue;
     }
 
-    constEnum[tsEnumMember.id.name] = value;
+    constEnum[key] = value;
+
+    let valueNode;
     if (Number.isFinite(value)) {
       valueNode = types.numericLiteral(value);
       currentValue = value + 1;
@@ -77,13 +94,10 @@ const TSEnumMembersToObjectProperties = memberPaths => {
       currentValue = null;
     } else {
       // Should not get here.
-      throw new Error('`value` is not a numer or string');
+      throw new Error('`value` is not a number or string');
     }
 
-    return types.objectProperty(
-      types.identifier(tsEnumMember.id.name),
-      valueNode,
-    );
+    return types.objectProperty(keyNode, valueNode);
   });
 };
 

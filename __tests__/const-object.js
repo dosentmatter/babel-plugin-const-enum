@@ -93,3 +93,26 @@ return MyEnum;
   expect(MyEnum.H).toBe(91);
   expect(MyEnum.I).toBe(95420416);
 });
+
+it('Transforms string literal properties', async () => {
+  const input = `const enum MyEnum {
+  'A' = 1,
+  "B" = 2,
+  'C D' = 3,
+  'E F' = 4
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+
+  const MyEnum = new Function(
+    `${output}
+return MyEnum;
+`,
+  )();
+  expect(MyEnum.A).toBe(1);
+  expect(MyEnum.B).toBe(2);
+  expect(MyEnum['C D']).toBe(3);
+  expect(MyEnum['E F']).toBe(4);
+});
