@@ -6,8 +6,7 @@ const options = {
 };
 
 it('Transforms no initializers', async () => {
-  const input =
-`const enum Direction { Left, Right, Down, Up };
+  const input = `const enum Direction { Left, Right, Down, Up };
 `;
 
   const { code: output } = await transformAsync(input, options);
@@ -15,8 +14,7 @@ it('Transforms no initializers', async () => {
 });
 
 it('Transforms string members', async () => {
-  const input =
-`const enum Enum {
+  const input = `const enum Enum {
   A = 1,
   B = A,
   C = '',
@@ -31,8 +29,7 @@ it('Transforms string members', async () => {
 });
 
 it('Transforms computed members', async () => {
-  const input =
-`const enum MyEnum {
+  const input = `const enum MyEnum {
   A = 1,
   B = A,
   C,
