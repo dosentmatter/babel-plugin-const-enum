@@ -38,11 +38,11 @@ const TSEnumMembersToObjectProperties = memberPaths => {
       key = tsEnumMember.id.value;
       keyNode = types.stringLiteral(key);
     } else if (types.isNumericLiteral(tsEnumMember.id)) {
-      throw tsEnumMemberPath.buildCodeFrameError(
+      throw tsEnumMemberPath.get('id').buildCodeFrameError(
         'An enum member cannot have a numeric name.',
       );
     } else {
-      throw tsEnumMemberPath.buildCodeFrameError('Enum member expected.');
+      throw tsEnumMemberPath.get('id').buildCodeFrameError('Enum member expected.');
     }
 
     let value;
@@ -60,7 +60,7 @@ const TSEnumMembersToObjectProperties = memberPaths => {
         isNumericBinaryExpression(tsEnumMember.initializer)
       ) {
         if (isStringEnum) {
-          throw tsEnumMemberPath.buildCodeFrameError(
+          throw tsEnumMemberPath.get('initializer').buildCodeFrameError(
             'Computed values are not permitted in an enum with string valued members.',
           );
         }
@@ -70,7 +70,7 @@ const TSEnumMembersToObjectProperties = memberPaths => {
           .traverse(accessConstEnumMemberVisitor, { constEnum });
         value = eval(generate(tsEnumMember.initializer).code);
       } else {
-        throw tsEnumMemberPath.buildCodeFrameError(
+        throw tsEnumMemberPath.get('initializer').buildCodeFrameError(
           'Enum initializer must be a string literal or numeric expression.',
         );
       }
