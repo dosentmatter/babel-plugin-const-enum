@@ -29,76 +29,132 @@ const TSEnumMembersToObjectProperties = memberPaths => {
   return memberPaths.map(tsEnumMemberPath => {
     const tsEnumMember = tsEnumMemberPath.node;
 
-    let key;
-    let keyNode;
-    if (types.isIdentifier(tsEnumMember.id)) {
-      key = tsEnumMember.id.name;
-      keyNode = types.identifier(key);
-    } else if (types.isStringLiteral(tsEnumMember.id)) {
-      key = tsEnumMember.id.value;
-      keyNode = types.stringLiteral(key);
-    } else if (types.isNumericLiteral(tsEnumMember.id)) {
-      throw tsEnumMemberPath.get('id').buildCodeFrameError(
-        'An enum member cannot have a numeric name.',
-      );
-    } else {
-      throw tsEnumMemberPath.get('id').buildCodeFrameError('Enum member expected.');
-    }
+    const keyNode = computeKeyNodeFromIdPath(tsEnumMemberPath.get('id'));
+    const key = getKeyFromKeyNode(keyNode);
 
-    let value;
-    if (tsEnumMember.initializer) {
-      if (
-        types.isNumericLiteral(tsEnumMember.initializer) ||
-        types.isStringLiteral(tsEnumMember.initializer)
-      ) {
-        value = tsEnumMember.initializer.value;
-      } else if (types.isIdentifier(tsEnumMember.initializer)) {
-        value = constEnum[tsEnumMember.initializer.name];
-        validateConstEnumMemberAccess(tsEnumMemberPath, value);
-      } else if (
-        isNumericUnaryExpression(tsEnumMember.initializer) ||
-        isNumericBinaryExpression(tsEnumMember.initializer)
-      ) {
-        if (isStringEnum) {
-          throw tsEnumMemberPath.get('initializer').buildCodeFrameError(
-            'Computed values are not permitted in an enum with string valued members.',
-          );
-        }
-
-        tsEnumMemberPath
-          .get('initializer')
-          .traverse(accessConstEnumMemberVisitor, { constEnum });
-        value = eval(generate(tsEnumMember.initializer).code);
-      } else {
-        throw tsEnumMemberPath.get('initializer').buildCodeFrameError(
-          'Enum initializer must be a string literal or numeric expression.',
-        );
-      }
-    } else {
-      if (currentValue === null) {
-        throw tsEnumMemberPath.buildCodeFrameError(
-          'Enum member must have initializer..',
-        );
-      }
-      value = currentValue;
-    }
+    const valueNode = computeValueNodeFromEnumMemberPath(
+      tsEnumMemberPath,
+      isStringEnum,
+      constEnum,
+      currentValue,
+    );
+    const value = getValueFromValueNode(valueNode);
 
     constEnum[key] = value;
 
-    let valueNode;
-    if (Number.isFinite(value)) {
-      valueNode = types.numericLiteral(value);
+    if (types.isNumericLiteral(valueNode)) {
       currentValue = value + 1;
-    } else if (typeof value === 'string') {
-      valueNode = types.stringLiteral(value);
+    } else if (types.isStringLiteral(valueNode)) {
       currentValue = null;
-    } else {
-      // Should not get here.
-      throw new Error('`value` is not a number or string');
     }
 
     return types.objectProperty(keyNode, valueNode);
   });
+};
+
+const computeKeyNodeFromIdPath = idPath => {
+  const id = idPath.node;
+
+  let keyNode;
+
+  if (types.isIdentifier(id)) {
+    const key = id.name;
+    keyNode = types.identifier(key);
+  } else if (types.isStringLiteral(id)) {
+    const key = id.value;
+    keyNode = types.stringLiteral(key);
+  } else if (types.isNumericLiteral(id)) {
+    throw idPath.buildCodeFrameError(
+      'An enum member cannot have a numeric name.',
+    );
+  } else {
+    throw idPath.buildCodeFrameError('Enum member expected.');
+  }
+
+  return keyNode;
+};
+
+const getKeyFromKeyNode = keyNode => {
+  let key;
+
+  if (types.isIdentifier(keyNode)) {
+    key = keyNode.name;
+  } else if (types.isStringLiteral(keyNode)) {
+    key = keyNode.value;
+  }
+
+  return key;
+};
+
+const computeValueNodeFromEnumMemberPath = (
+  tsEnumMemberPath,
+  isStringEnum,
+  constEnum,
+  currentValue,
+) => {
+  const initializerPath = tsEnumMemberPath.get('initializer');
+  const initializer = initializerPath.node;
+
+  let value;
+
+  if (initializer) {
+    if (
+      types.isNumericLiteral(initializer) ||
+      types.isStringLiteral(initializer)
+    ) {
+      value = initializer.value;
+    } else if (types.isIdentifier(initializer)) {
+      value = constEnum[initializer.name];
+      validateConstEnumMemberAccess(tsEnumMemberPath, value);
+    } else if (
+      isNumericUnaryExpression(initializer) ||
+      isNumericBinaryExpression(initializer)
+    ) {
+      if (isStringEnum) {
+        throw initializerPath.buildCodeFrameError(
+          'Computed values are not permitted in an enum with string valued members.',
+        );
+      }
+
+      initializerPath.traverse(accessConstEnumMemberVisitor, { constEnum });
+
+      value = eval(generate(initializer).code);
+    } else {
+      throw initializerPath.buildCodeFrameError(
+        'Enum initializer must be a string literal or numeric expression.',
+      );
+    }
+  } else {
+    if (currentValue === null) {
+      throw tsEnumMemberPath.buildCodeFrameError(
+        'Enum member must have initializer..',
+      );
+    }
+    value = currentValue;
+  }
+
+  let valueNode;
+
+  if (Number.isFinite(value)) {
+    valueNode = types.numericLiteral(value);
+  } else if (typeof value === 'string') {
+    valueNode = types.stringLiteral(value);
+  } else {
+    // Should not get here.
+    throw new Error('`value` is not a number or string');
+  }
+
+  return valueNode;
+};
+
+const getValueFromValueNode = valueNode => {
+  let value;
+
+  if (types.isNumericLiteral(valueNode) || types.isStringLiteral(valueNode)) {
+    value = valueNode.value;
+  }
+
+  return value;
 };
 
 const isNumericUnaryExpression = node =>
