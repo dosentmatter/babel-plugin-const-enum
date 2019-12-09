@@ -38,6 +38,15 @@ exports[`Transforms no initializers 1`] = `
 ;"
 `;
 
+exports[`Transforms string literal properties 1`] = `
+"const MyEnum = {
+  \\"A\\": 1,
+  \\"B\\": 2,
+  \\"C D\\": 3,
+  \\"E F\\": 4
+};"
+`;
+
 exports[`Transforms string members 1`] = `
 "const Enum = {
   A: 1,
