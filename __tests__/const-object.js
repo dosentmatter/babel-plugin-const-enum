@@ -26,6 +26,18 @@ it('Transforms string members', async () => {
 
   const { code: output } = await transformAsync(input, options);
   expect(output).toMatchSnapshot();
+
+  const MyEnum = new Function(
+    `${output}
+return MyEnum;
+`,
+  )();
+  expect(MyEnum.A).toBe(1);
+  expect(MyEnum.B).toBe(1);
+  expect(MyEnum.C).toBe('');
+  expect(MyEnum.D).toBe('');
+  expect(MyEnum.E).toBe(1);
+  expect(MyEnum.F).toBe(2);
 });
 
 it('Transforms computed members', async () => {
