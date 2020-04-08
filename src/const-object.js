@@ -19,14 +19,14 @@ export default {
   },
 };
 
-const TSEnumMembersToObjectProperties = memberPaths => {
-  const isStringEnum = memberPaths.some(memberPath =>
+const TSEnumMembersToObjectProperties = (memberPaths) => {
+  const isStringEnum = memberPaths.some((memberPath) =>
     types.isStringLiteral(memberPath.node.initializer),
   );
   const constEnum = {};
   let currentValue = 0;
 
-  return memberPaths.map(tsEnumMemberPath => {
+  return memberPaths.map((tsEnumMemberPath) => {
     const tsEnumMember = tsEnumMemberPath.node;
 
     const keyNode = computeKeyNodeFromIdPath(tsEnumMemberPath.get('id'));
@@ -52,7 +52,7 @@ const TSEnumMembersToObjectProperties = memberPaths => {
   });
 };
 
-const computeKeyNodeFromIdPath = idPath => {
+const computeKeyNodeFromIdPath = (idPath) => {
   const id = idPath.node;
 
   let keyNode;
@@ -74,7 +74,7 @@ const computeKeyNodeFromIdPath = idPath => {
   return keyNode;
 };
 
-const getKeyFromKeyNode = keyNode => {
+const getKeyFromKeyNode = (keyNode) => {
   let key;
 
   if (types.isIdentifier(keyNode)) {
@@ -147,7 +147,7 @@ const computeValueNodeFromEnumMemberPath = (
   return valueNode;
 };
 
-const getValueFromValueNode = valueNode => {
+const getValueFromValueNode = (valueNode) => {
   let value;
 
   if (types.isNumericLiteral(valueNode) || types.isStringLiteral(valueNode)) {
@@ -157,10 +157,10 @@ const getValueFromValueNode = valueNode => {
   return value;
 };
 
-const isNumericUnaryExpression = node =>
+const isNumericUnaryExpression = (node) =>
   types.isUnaryExpression(node) && new Set(['+', '-', '~']).has(node.operator);
 
-const isNumericBinaryExpression = node =>
+const isNumericBinaryExpression = (node) =>
   types.isBinaryExpression(node) &&
   new Set([
     '+',
