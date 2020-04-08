@@ -25,7 +25,7 @@ exports[`Transforms no initializers 1`] = `
 `;
 
 exports[`Transforms string members 1`] = `
-"enum Enum {
+"enum MyEnum {
   A = 1,
   B = A,
   C = '',

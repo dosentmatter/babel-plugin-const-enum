@@ -14,7 +14,7 @@ it('Transforms no initializers', async () => {
 });
 
 it('Transforms string members', async () => {
-  const input = `const enum Enum {
+  const input = `const enum MyEnum {
   A = 1,
   B = A,
   C = '',
