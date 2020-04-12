@@ -45,3 +45,34 @@ it('Transforms computed members', async () => {
   const { code: output } = await transformAsync(input, options);
   expect(output).toMatchSnapshot();
 });
+
+it('Transforms chained computed members', async () => {
+  const input = `const enum MyEnum {
+  A = 1,
+  B = A * 2,
+  C,
+  D = C,
+  E = D ** 2,
+  F,
+  G = F * E,
+  H,
+  I = H << 20
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+});
+
+it('Transforms string literal properties', async () => {
+  const input = `const enum MyEnum {
+  'A' = 1,
+  "B" = 2,
+  'C D' = 3,
+  'E F' = 4
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+});
