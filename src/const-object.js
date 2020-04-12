@@ -157,25 +157,28 @@ const getValueFromValueNode = (valueNode) => {
   return value;
 };
 
+const UNARY_OPERATORS = new Set(['+', '-', '~']);
+
+const BINARY_OPERATORS = new Set([
+  '+',
+  '-',
+  '/',
+  '%',
+  '*',
+  '**',
+  '&',
+  '|',
+  '>>',
+  '>>>',
+  '<<',
+  '^',
+]);
+
 const isNumericUnaryExpression = (node) =>
-  types.isUnaryExpression(node) && new Set(['+', '-', '~']).has(node.operator);
+  types.isUnaryExpression(node) && UNARY_OPERATORS.has(node.operator);
 
 const isNumericBinaryExpression = (node) =>
-  types.isBinaryExpression(node) &&
-  new Set([
-    '+',
-    '-',
-    '/',
-    '%',
-    '*',
-    '**',
-    '&',
-    '|',
-    '>>',
-    '>>>',
-    '<<',
-    '^',
-  ]).has(node.operator);
+  types.isBinaryExpression(node) && BINARY_OPERATORS.has(node.operator);
 
 const validateConstEnumMemberAccess = (path, value) => {
   if (value === undefined) {
