@@ -38,7 +38,7 @@ it('Transforms computed members', async () => {
   F,
   G = A * E,
   H = A ** B ** C,
-  I = A << 20
+  I = A << 20,
 }
 `;
 
@@ -56,7 +56,7 @@ it('Transforms chained computed members', async () => {
   F,
   G = F * E,
   H,
-  I = H << 20
+  I = H << 20,
 }
 `;
 
@@ -69,7 +69,7 @@ it('Transforms string literal properties', async () => {
   'A' = 1,
   "B" = 2,
   'C D' = 3,
-  'E F' = 4
+  'E F' = 4,
 }
 `;
 
