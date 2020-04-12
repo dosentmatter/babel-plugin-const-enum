@@ -119,13 +119,13 @@ const computeValueNodeFromEnumMemberPath = (
       value = eval(generate(initializer).code);
     } else {
       throw initializerPath.buildCodeFrameError(
-        'Enum initializer must be a string literal or numeric expression.',
+        'const enum member initializers can only contain literal values and other computed enum values.',
       );
     }
   } else {
     if (currentValue === null) {
       throw tsEnumMemberPath.buildCodeFrameError(
-        'Enum member must have initializer..',
+        'Enum member must have initializer.',
       );
     }
     value = currentValue;
