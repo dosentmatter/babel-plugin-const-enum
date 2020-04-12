@@ -76,3 +76,18 @@ it('Transforms string literal properties', async () => {
   const { code: output } = await transformAsync(input, options);
   expect(output).toMatchSnapshot();
 });
+
+it('Transforms `declare const enum`', async () => {
+  const input = `declare const enum MyEnum {
+  A = 1,
+  B = A,
+  C = '',
+  D = C,
+  E = 1,
+  F,
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+});

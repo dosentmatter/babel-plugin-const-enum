@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Transforms \`declare const enum\` 1`] = `
+"declare enum MyEnum {
+  A = 1,
+  B = A,
+  C = '',
+  D = C,
+  E = 1,
+  F,
+}"
+`;
+
 exports[`Transforms chained computed members 1`] = `
 "enum MyEnum {
   A = 1,
