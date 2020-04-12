@@ -34,8 +34,8 @@
     "@babel/core": "^7.5.0",
     "@babel/generator": "^7.5.0",
     "@babel/preset-env": "^7.5.0",
-    "babel-jest": "^24.8.0",
-    "jest": "^24.8.0",
+    "babel-jest": "^25.2.6",
+    "jest": "^25.2.7",
     "prettier": "^2.0.4"
   },
   "files": [
