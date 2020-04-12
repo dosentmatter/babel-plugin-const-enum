@@ -27,8 +27,6 @@ const TSEnumMembersToObjectProperties = (memberPaths) => {
   let currentValue = 0;
 
   return memberPaths.map((tsEnumMemberPath) => {
-    const tsEnumMember = tsEnumMemberPath.node;
-
     const keyNode = computeKeyNodeFromIdPath(tsEnumMemberPath.get('id'));
     const key = getKeyFromKeyNode(keyNode);
 
