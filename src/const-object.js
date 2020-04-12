@@ -27,8 +27,6 @@ const TSEnumMembersToObjectProperties = (memberPaths) => {
   let currentValue = 0;
 
   return memberPaths.map((tsEnumMemberPath) => {
-    const tsEnumMember = tsEnumMemberPath.node;
-
     const keyNode = computeKeyNodeFromIdPath(tsEnumMemberPath.get('id'));
     const key = getKeyFromKeyNode(keyNode);
 
@@ -121,13 +119,13 @@ const computeValueNodeFromEnumMemberPath = (
       value = eval(generate(initializer).code);
     } else {
       throw initializerPath.buildCodeFrameError(
-        'Enum initializer must be a string literal or numeric expression.',
+        'const enum member initializers can only contain literal values and other computed enum values.',
       );
     }
   } else {
     if (currentValue === null) {
       throw tsEnumMemberPath.buildCodeFrameError(
-        'Enum member must have initializer..',
+        'Enum member must have initializer.',
       );
     }
     value = currentValue;
@@ -157,25 +155,28 @@ const getValueFromValueNode = (valueNode) => {
   return value;
 };
 
+const UNARY_OPERATORS = new Set(['+', '-', '~']);
+
+const BINARY_OPERATORS = new Set([
+  '+',
+  '-',
+  '/',
+  '%',
+  '*',
+  '**',
+  '&',
+  '|',
+  '>>',
+  '>>>',
+  '<<',
+  '^',
+]);
+
 const isNumericUnaryExpression = (node) =>
-  types.isUnaryExpression(node) && new Set(['+', '-', '~']).has(node.operator);
+  types.isUnaryExpression(node) && UNARY_OPERATORS.has(node.operator);
 
 const isNumericBinaryExpression = (node) =>
-  types.isBinaryExpression(node) &&
-  new Set([
-    '+',
-    '-',
-    '/',
-    '%',
-    '*',
-    '**',
-    '&',
-    '|',
-    '>>',
-    '>>>',
-    '<<',
-    '^',
-  ]).has(node.operator);
+  types.isBinaryExpression(node) && BINARY_OPERATORS.has(node.operator);
 
 const validateConstEnumMemberAccess = (path, value) => {
   if (value === undefined) {
