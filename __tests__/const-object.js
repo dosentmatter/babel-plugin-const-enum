@@ -138,3 +138,30 @@ return MyEnum;
   expect(MyEnum['C D']).toBe(3);
   expect(MyEnum['E F']).toBe(4);
 });
+
+it('Transforms `declare const enum`', async () => {
+  const input = `declare const enum MyEnum {
+  A = 1,
+  B = A,
+  C = '',
+  D = C,
+  E = 1,
+  F,
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+
+  const MyEnum = new Function(
+    `${output}
+return MyEnum;
+`,
+  )();
+  expect(MyEnum.A).toBe(1);
+  expect(MyEnum.B).toBe(1);
+  expect(MyEnum.C).toBe('');
+  expect(MyEnum.D).toBe('');
+  expect(MyEnum.E).toBe(1);
+  expect(MyEnum.F).toBe(2);
+});
