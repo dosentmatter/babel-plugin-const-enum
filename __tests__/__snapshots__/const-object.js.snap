@@ -48,7 +48,7 @@ exports[`Transforms string literal properties 1`] = `
 `;
 
 exports[`Transforms string members 1`] = `
-"const Enum = {
+"const MyEnum = {
   A: 1,
   B: 1,
   C: \\"\\",
