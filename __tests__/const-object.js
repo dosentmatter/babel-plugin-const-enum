@@ -11,6 +11,16 @@ it('Transforms no initializers', async () => {
 
   const { code: output } = await transformAsync(input, options);
   expect(output).toMatchSnapshot();
+
+  const Direction = new Function(
+    `${output}
+return Direction;
+`,
+  )();
+  expect(Direction.Left).toBe(0);
+  expect(Direction.Right).toBe(1);
+  expect(Direction.Down).toBe(2);
+  expect(Direction.Up).toBe(3);
 });
 
 it('Transforms string members', async () => {
