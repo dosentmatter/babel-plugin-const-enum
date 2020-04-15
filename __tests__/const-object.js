@@ -165,3 +165,16 @@ return MyEnum;
   expect(MyEnum.E).toBe(1);
   expect(MyEnum.F).toBe(2);
 });
+
+const typescriptOptions = {
+  plugins: [...options.plugins, '@babel/transform-typescript'],
+};
+
+it('Transforms `export default` with `@babel/plugin-transform-typescript`', async () => {
+  const input = `const enum Direction { Left, Right, Down, Up }
+export default Direction
+`;
+
+  const { code: output } = await transformAsync(input, typescriptOptions);
+  expect(output).toMatchSnapshot();
+});
