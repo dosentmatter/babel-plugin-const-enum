@@ -6,7 +6,7 @@ const options = {
 };
 
 it('Transforms no initializers', async () => {
-  const input = `const enum Direction { Left, Right, Down, Up };
+  const input = `const enum Direction { Left, Right, Down, Up }
 `;
 
   const { code: output } = await transformAsync(input, options);

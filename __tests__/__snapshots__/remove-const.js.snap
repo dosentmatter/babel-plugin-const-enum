@@ -45,8 +45,7 @@ exports[`Transforms no initializers 1`] = `
   Right,
   Down,
   Up,
-}
-;"
+}"
 `;
 
 exports[`Transforms string literal properties 1`] = `
