@@ -4,7 +4,8 @@ import generate from '@babel/generator';
 export default {
   TSEnumDeclaration(path) {
     if (path.node.const) {
-      path.replaceWith(
+      // `path === constObjectPath` for `replaceWith`.
+      const [constObjectPath] = path.replaceWith(
         types.variableDeclaration('const', [
           types.variableDeclarator(
             types.identifier(path.node.id.name),
@@ -14,6 +15,7 @@ export default {
           ),
         ]),
       );
+      path.scope.registerDeclaration(constObjectPath);
     }
   },
 };
