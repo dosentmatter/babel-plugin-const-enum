@@ -1,4 +1,4 @@
-# babel-plugin-const-enum
+# babel-plugin-const-enum &middot; [![npm version](https://img.shields.io/npm/v/babel-plugin-const-enum.svg?style=flat)](https://www.npmjs.com/package/babel-plugin-const-enum) [![npm downloads](https://img.shields.io/npm/dm/babel-plugin-const-enum.svg?style=flat)](https://www.npmjs.com/package/babel-plugin-const-enum)
 
 > Transform TypeScript `const` enums
 
