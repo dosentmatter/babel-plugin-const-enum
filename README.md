@@ -39,7 +39,7 @@ This plugin needs to run first to transform the `const enum`s into code that
 
 ```json
 {
-  "plugins": ["const-enum", "@babel/transform-typescript"]
+  "plugins": ["const-enum", "@babel/plugin-transform-typescript"]
 }
 ```
 
