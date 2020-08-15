@@ -1,6 +1,5 @@
 import { declare } from '@babel/helper-plugin-utils';
 import syntaxTypeScript from '@babel/plugin-syntax-typescript';
-import { types } from '@babel/core';
 import removeConst from './remove-const';
 import constObject from './const-object';
 

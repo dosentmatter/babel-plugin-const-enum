@@ -20,7 +20,8 @@
     "build": "babel src --out-dir lib",
     "prepublishOnly": "yarn run build",
     "test": "jest",
-    "prettier-fix": "prettier --write src/**/*.js __tests__/**/*.js"
+    "lint-fix": "eslint --fix 'src/**/*.js' '__tests__/**/*.js'",
+    "prettier-fix": "prettier --write 'src/**/*.js' '__tests__/**/*.js'"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0-0"
@@ -36,6 +37,7 @@
     "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-env": "^7.5.0",
     "babel-jest": "^25.2.6",
+    "eslint": "^7.7.0",
     "jest": "^25.2.7",
     "prettier": "^2.0.4"
   },
