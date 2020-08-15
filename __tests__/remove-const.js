@@ -1,3 +1,5 @@
+/* global it, expect */
+
 import { transformAsync } from '@babel/core';
 import plugin from '../src';
 
