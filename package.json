@@ -20,6 +20,7 @@
     "build": "babel src --out-dir lib",
     "prepublishOnly": "yarn run build",
     "test": "jest",
+    "lint-fix": "eslint --fix src/**/*.js __tests__/**/*.js",
     "prettier-fix": "prettier --write src/**/*.js __tests__/**/*.js"
   },
   "peerDependencies": {
