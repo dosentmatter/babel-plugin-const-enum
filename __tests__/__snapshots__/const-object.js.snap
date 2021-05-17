@@ -11,6 +11,15 @@ exports[`Transforms \`declare const enum\` 1`] = `
 };"
 `;
 
+exports[`Transforms \`export const\` with \`@babel/plugin-transform-typescript\` 1`] = `
+"export const Direction = {
+  Left: 0,
+  Right: 1,
+  Down: 2,
+  Up: 3
+};"
+`;
+
 exports[`Transforms \`export default\` with \`@babel/plugin-transform-typescript\` 1`] = `
 "const Direction = {
   Left: 0,
@@ -19,6 +28,16 @@ exports[`Transforms \`export default\` with \`@babel/plugin-transform-typescript
   Up: 3
 };
 export default Direction;"
+`;
+
+exports[`Transforms \`export\` with \`@babel/plugin-transform-typescript\` 1`] = `
+"const Direction = {
+  Left: 0,
+  Right: 1,
+  Down: 2,
+  Up: 3
+};
+export { Direction };"
 `;
 
 exports[`Transforms chained computed members 1`] = `
