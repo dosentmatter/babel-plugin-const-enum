@@ -174,7 +174,7 @@ const typescriptOptions = {
 
 it('Transforms `export default` with `@babel/plugin-transform-typescript`', async () => {
   const input = `const enum Direction { Left, Right, Down, Up }
-export default Direction
+export default Direction;
 `;
 
   const { code: output } = await transformAsync(input, typescriptOptions);
@@ -183,7 +183,7 @@ export default Direction
 
 it('Transforms `export` with `@babel/plugin-transform-typescript`', async () => {
   const input = `const enum Direction { Left, Right, Down, Up }
-export { Direction }
+export { Direction };
 `;
 
   const { code: output } = await transformAsync(input, typescriptOptions);
