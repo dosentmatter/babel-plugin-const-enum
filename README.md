@@ -22,7 +22,7 @@ You are most likely using
 [`@babel/preset-typescript`](https://babeljs.io/docs/en/babel-preset-typescript)
 or
 [`@babel/plugin-transform-typescript`](https://babeljs.io/docs/en/babel-plugin-transform-typescript)
-as along with this plugin.
+along with this plugin.
 
 If you are using `@babel/preset-typescript`, then nothing special needs to be
 done since
