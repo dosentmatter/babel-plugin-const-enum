@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-const-enum",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Transform TypeScript `const` enums",
   "repository": "https://github.com/dosentmatter/babel-plugin-const-enum",
   "author": "Kevin Lau",
