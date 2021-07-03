@@ -27,13 +27,13 @@
     "@babel/core": "^7.0.0-0"
   },
   "dependencies": {
+    "@babel/generator": "^7.5.0",
     "@babel/helper-plugin-utils": "^7.0.0",
     "@babel/plugin-syntax-typescript": "^7.3.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.0",
-    "@babel/generator": "^7.5.0",
     "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-env": "^7.5.0",
     "babel-jest": "^26.6.3",
