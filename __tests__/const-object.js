@@ -85,6 +85,25 @@ return MyEnum;
   expect(MyEnum.I).toBe(1048576);
 });
 
+it('Transforms computed members', async () => {
+  const input = `const enum MyEnum {
+  A = -13 + +12 - ~11 / 10 % 9 * 8 ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
+  B = -(13 + +12 - ~11 / 10) % (9 * 8) ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
+}
+`;
+
+  const { code: output } = await transformAsync(input, options);
+  expect(output).toMatchSnapshot();
+
+  const MyEnum = new Function(
+    `${output}
+return MyEnum;
+`,
+  )();
+  expect(MyEnum.A).toBe(5);
+  expect(MyEnum.B).toBe(7);
+});
+
 it('Transforms chained computed members', async () => {
   const input = `const enum MyEnum {
   A = 1,
