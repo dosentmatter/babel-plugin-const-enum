@@ -68,6 +68,13 @@ exports[`Transforms computed members 1`] = `
 };"
 `;
 
+exports[`Transforms computed members 2`] = `
+"const MyEnum = {
+  A: 5,
+  B: 7
+};"
+`;
+
 exports[`Transforms no initializers 1`] = `
 "const Direction = {
   Left: 0,
