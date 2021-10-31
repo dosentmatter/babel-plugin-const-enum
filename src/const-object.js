@@ -117,7 +117,7 @@ const computeValueNodeFromEnumMemberPath = (
 
       initializerPath.traverse(accessConstEnumMemberVisitor, { constEnum });
 
-      value = eval(generate(initializer).code);
+      value = new Function(`return ${generate(initializer).code}`)();
     } else {
       throw initializerPath.buildCodeFrameError(
         'const enum member initializers can only contain literal values and other computed enum values.',
