@@ -104,6 +104,47 @@ return MyEnum;
   expect(MyEnum.B).toBe(7);
 });
 
+const DISALLOWED_NAN_ERROR_MESSAGE =
+  "'const' enum member initializer was evaluated to disallowed value 'NaN'.";
+const DISALLOWED_INFINITY_ERROR_MESSAGE =
+  "'const' enum member initializer was evaluated to a non-finite value.";
+
+it('Transform fails for `NaN` and `Infinity` computed members', async () => {
+  let input;
+
+  input = `const enum MyEnum {
+  A = NaN,
+}
+`;
+  expect(transformAsync(input, options)).rejects.toThrow(
+    DISALLOWED_NAN_ERROR_MESSAGE,
+  );
+
+  input = `const enum MyEnum {
+  A = Infinity,
+}
+`;
+  expect(transformAsync(input, options)).rejects.toThrow(
+    DISALLOWED_INFINITY_ERROR_MESSAGE,
+  );
+
+  input = `const enum MyEnum {
+  A = 0 / 0,
+}
+`;
+  expect(transformAsync(input, options)).rejects.toThrow(
+    DISALLOWED_NAN_ERROR_MESSAGE,
+  );
+
+  input = `const enum MyEnum {
+  A = 1 / 0,
+}
+`;
+  expect(transformAsync(input, options)).rejects.toThrow(
+    DISALLOWED_INFINITY_ERROR_MESSAGE,
+  );
+});
+
 it('Transforms chained computed members', async () => {
   const input = `const enum MyEnum {
   A = 1,

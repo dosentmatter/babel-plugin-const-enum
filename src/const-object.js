@@ -1,6 +1,11 @@
 import { types } from '@babel/core';
 import generate from '@babel/generator';
 
+const DISALLOWED_NAN_ERROR_MESSAGE =
+  "'const' enum member initializer was evaluated to disallowed value 'NaN'.";
+const DISALLOWED_INFINITY_ERROR_MESSAGE =
+  "'const' enum member initializer was evaluated to a non-finite value.";
+
 export default {
   TSEnumDeclaration(path) {
     if (path.node.const) {
@@ -103,6 +108,7 @@ const computeValueNodeFromEnumMemberPath = (
     ) {
       value = initializer.value;
     } else if (types.isIdentifier(initializer)) {
+      validateIdentifierName(initializerPath);
       value = constEnum[initializer.name];
       validateConstEnumMemberAccess(tsEnumMemberPath, value);
     } else if (
@@ -138,6 +144,12 @@ const computeValueNodeFromEnumMemberPath = (
     valueNode = types.numericLiteral(value);
   } else if (typeof value === 'string') {
     valueNode = types.stringLiteral(value);
+  } else if (Number.isNaN(value)) {
+    throw tsEnumMemberPath.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
+  } else if (!Number.isFinite(value)) {
+    throw tsEnumMemberPath.buildCodeFrameError(
+      DISALLOWED_INFINITY_ERROR_MESSAGE,
+    );
   } else {
     // Should not get here.
     throw new Error('`value` is not a number or string');
@@ -179,6 +191,15 @@ const isNumericUnaryExpression = (node) =>
 const isNumericBinaryExpression = (node) =>
   types.isBinaryExpression(node) && BINARY_OPERATORS.has(node.operator);
 
+const validateIdentifierName = (path) => {
+  switch (path.node.name) {
+    case 'NaN':
+      throw path.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
+    case 'Infinity':
+      throw path.buildCodeFrameError(DISALLOWED_INFINITY_ERROR_MESSAGE);
+  }
+};
+
 const validateConstEnumMemberAccess = (path, value) => {
   if (value === undefined) {
     throw path.buildCodeFrameError(
@@ -190,6 +211,7 @@ const validateConstEnumMemberAccess = (path, value) => {
 const accessConstEnumMemberVisitor = {
   enter(path) {
     if (types.isIdentifier(path.node)) {
+      validateIdentifierName(path);
       const constEnum = this.constEnum;
       const value = constEnum[path.node.name];
       validateConstEnumMemberAccess(path, value);
