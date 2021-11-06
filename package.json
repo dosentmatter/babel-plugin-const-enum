@@ -27,9 +27,9 @@
     "@babel/core": "^7.0.0-0"
   },
   "dependencies": {
-    "@babel/generator": "^7.5.0",
     "@babel/helper-plugin-utils": "^7.0.0",
-    "@babel/plugin-syntax-typescript": "^7.3.3"
+    "@babel/plugin-syntax-typescript": "^7.3.3",
+    "@babel/traverse": "^7.16.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",

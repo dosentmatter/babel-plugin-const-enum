@@ -2,6 +2,11 @@
 
 import { transformAsync } from '@babel/core';
 import plugin from '../src';
+import {
+  DISALLOWED_NAN_ERROR_MESSAGE,
+  DISALLOWED_INFINITY_ERROR_MESSAGE,
+  NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+} from '../src/const-object';
 
 const options = {
   plugins: [[plugin, { transform: 'constObject' }]],
@@ -104,10 +109,25 @@ return MyEnum;
   expect(MyEnum.B).toBe(7);
 });
 
-const DISALLOWED_NAN_ERROR_MESSAGE =
-  "'const' enum member initializer was evaluated to disallowed value 'NaN'.";
-const DISALLOWED_INFINITY_ERROR_MESSAGE =
-  "'const' enum member initializer was evaluated to a non-finite value.";
+it('Transform fails for unsupported operators', async () => {
+  let input;
+
+  input = `const enum MyEnum {
+  A = 1 === 1,
+}
+`;
+  await expect(transformAsync(input, options)).rejects.toThrow(
+    NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+  );
+
+  input = `const enum MyEnum {
+  A = 1 + (1 > 1),
+}
+`;
+  await expect(transformAsync(input, options)).rejects.toThrow(
+    NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+  );
+});
 
 it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   let input;
