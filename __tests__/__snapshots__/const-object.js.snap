@@ -68,7 +68,7 @@ exports[`Transforms computed members 1`] = `
 };"
 `;
 
-exports[`Transforms computed members 2`] = `
+exports[`Transforms computed members with supported operators 1`] = `
 "const MyEnum = {
   A: 5,
   B: 7

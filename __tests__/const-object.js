@@ -85,7 +85,7 @@ return MyEnum;
   expect(MyEnum.I).toBe(1048576);
 });
 
-it('Transforms computed members', async () => {
+it('Transforms computed members with supported operators', async () => {
   const input = `const enum MyEnum {
   A = -13 + +12 - ~11 / 10 % 9 * 8 ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
   B = -(13 + +12 - ~11 / 10) % (9 * 8) ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
