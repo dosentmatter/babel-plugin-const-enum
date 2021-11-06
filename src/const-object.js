@@ -191,12 +191,14 @@ const isNumericUnaryExpression = (node) =>
 const isNumericBinaryExpression = (node) =>
   types.isBinaryExpression(node) && BINARY_OPERATORS.has(node.operator);
 
-const validateIdentifierName = (path) => {
-  switch (path.node.name) {
+const validateIdentifierName = (identifierPath) => {
+  switch (identifierPath.node.name) {
     case 'NaN':
-      throw path.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
+      throw identifierPath.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
     case 'Infinity':
-      throw path.buildCodeFrameError(DISALLOWED_INFINITY_ERROR_MESSAGE);
+      throw identifierPath.buildCodeFrameError(
+        DISALLOWED_INFINITY_ERROR_MESSAGE,
+      );
   }
 };
 
