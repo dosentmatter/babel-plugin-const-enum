@@ -146,7 +146,7 @@ const computeValueNodeFromEnumMemberPath = (
     valueNode = types.stringLiteral(value);
   } else if (Number.isNaN(value)) {
     throw tsEnumMemberPath.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
-  } else if (!Number.isFinite(value)) {
+  } else if (value === Infinity || value === -Infinity) {
     throw tsEnumMemberPath.buildCodeFrameError(
       DISALLOWED_INFINITY_ERROR_MESSAGE,
     );
