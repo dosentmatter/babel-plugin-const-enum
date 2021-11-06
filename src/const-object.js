@@ -1,10 +1,12 @@
 import { types } from '@babel/core';
-import generate from '@babel/generator';
+import traverse from '@babel/traverse';
 
-const DISALLOWED_NAN_ERROR_MESSAGE =
+export const DISALLOWED_NAN_ERROR_MESSAGE =
   "'const' enum member initializer was evaluated to disallowed value 'NaN'.";
-const DISALLOWED_INFINITY_ERROR_MESSAGE =
+export const DISALLOWED_INFINITY_ERROR_MESSAGE =
   "'const' enum member initializer was evaluated to a non-finite value.";
+export const NON_NUMERIC_EXPRESSION_ERROR_MESSAGE =
+  'Must be numeric expression.';
 
 export default {
   TSEnumDeclaration(path) {
@@ -112,8 +114,8 @@ const computeValueNodeFromEnumMemberPath = (
       value = constEnum[initializer.name];
       validateConstEnumMemberAccess(tsEnumMemberPath, value);
     } else if (
-      isNumericUnaryExpression(initializer) ||
-      isNumericBinaryExpression(initializer)
+      types.isUnaryExpression(initializer) ||
+      types.isBinaryExpression(initializer)
     ) {
       if (isStringEnum) {
         throw initializerPath.buildCodeFrameError(
@@ -121,9 +123,11 @@ const computeValueNodeFromEnumMemberPath = (
         );
       }
 
-      initializerPath.traverse(accessConstEnumMemberVisitor, { constEnum });
+      traverseFromRoot(initializerPath, accessConstEnumMemberVisitor, {
+        constEnum,
+      });
 
-      value = new Function(`return ${generate(initializer).code}`)();
+      value = evaluateInitializer(initializerPath);
     } else {
       throw initializerPath.buildCodeFrameError(
         'const enum member initializers can only contain literal values and other computed enum values.',
@@ -146,7 +150,7 @@ const computeValueNodeFromEnumMemberPath = (
     valueNode = types.stringLiteral(value);
   } else if (Number.isNaN(value)) {
     throw tsEnumMemberPath.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
-  } else if (!Number.isFinite(value)) {
+  } else if (value === Infinity || value === -Infinity) {
     throw tsEnumMemberPath.buildCodeFrameError(
       DISALLOWED_INFINITY_ERROR_MESSAGE,
     );
@@ -168,35 +172,43 @@ const getValueFromValueNode = (valueNode) => {
   return value;
 };
 
-const UNARY_OPERATORS = new Set(['+', '-', '~']);
+const UNARY_OPERATORS = {
+  '+': (a) => +a,
+  '-': (a) => -a,
+  '~': (a) => ~a,
+};
 
-const BINARY_OPERATORS = new Set([
-  '+',
-  '-',
-  '/',
-  '%',
-  '*',
-  '**',
-  '&',
-  '|',
-  '>>',
-  '>>>',
-  '<<',
-  '^',
-]);
+const BINARY_OPERATORS = {
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+  '/': (a, b) => a / b,
+  '%': (a, b) => a % b,
+  '*': (a, b) => a * b,
+  '**': (a, b) => a ** b,
+  '&': (a, b) => a & b,
+  '|': (a, b) => a | b,
+  '>>': (a, b) => a >> b,
+  '>>>': (a, b) => a >>> b,
+  '<<': (a, b) => a << b,
+  '^': (a, b) => a ^ b,
+};
 
 const isNumericUnaryExpression = (node) =>
-  types.isUnaryExpression(node) && UNARY_OPERATORS.has(node.operator);
+  types.isUnaryExpression(node) &&
+  Object.prototype.hasOwnProperty.call(UNARY_OPERATORS, node.operator);
 
 const isNumericBinaryExpression = (node) =>
-  types.isBinaryExpression(node) && BINARY_OPERATORS.has(node.operator);
+  types.isBinaryExpression(node) &&
+  Object.prototype.hasOwnProperty.call(BINARY_OPERATORS, node.operator);
 
-const validateIdentifierName = (path) => {
-  switch (path.node.name) {
+const validateIdentifierName = (identifierPath) => {
+  switch (identifierPath.node.name) {
     case 'NaN':
-      throw path.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
+      throw identifierPath.buildCodeFrameError(DISALLOWED_NAN_ERROR_MESSAGE);
     case 'Infinity':
-      throw path.buildCodeFrameError(DISALLOWED_INFINITY_ERROR_MESSAGE);
+      throw identifierPath.buildCodeFrameError(
+        DISALLOWED_INFINITY_ERROR_MESSAGE,
+      );
   }
 };
 
@@ -205,6 +217,23 @@ const validateConstEnumMemberAccess = (path, value) => {
     throw path.buildCodeFrameError(
       'Enum initializer identifier must reference a previously defined enum member.',
     );
+  }
+};
+
+const traverseFromRoot = (path, visitor, state) => {
+  visitor = traverse.visitors.explode(visitor);
+  if (visitor.enter) {
+    visitor.enter[0].call(state, path, state);
+  }
+  if (visitor[path.type] && visitor[path.type].enter) {
+    visitor[path.type].enter[0].call(state, path, state);
+  }
+  path.traverse(visitor, state);
+  if (visitor.exit) {
+    visitor.exit[0].call(state, path, state);
+  }
+  if (visitor[path.type] && visitor[path.type].exit) {
+    visitor[path.type].exit[0].call(state, path, state);
   }
 };
 
@@ -225,7 +254,35 @@ const accessConstEnumMemberVisitor = {
         isNumericBinaryExpression(path.node)
       )
     ) {
-      throw path.buildCodeFrameError('Must be numeric expression.');
+      throw path.buildCodeFrameError(NON_NUMERIC_EXPRESSION_ERROR_MESSAGE);
     }
+  },
+};
+
+const evaluateInitializer = (initializerPath) => {
+  traverseFromRoot(initializerPath, evaluateInitializerVisitor);
+  return initializerPath.node.value;
+};
+
+const evaluateInitializerVisitor = {
+  UnaryExpression: {
+    exit(path) {
+      const { node } = path;
+      path.replaceWith(
+        types.numericLiteral(
+          UNARY_OPERATORS[node.operator](node.argument.value),
+        ),
+      );
+    },
+  },
+  BinaryExpression: {
+    exit(path) {
+      const { node } = path;
+      path.replaceWith(
+        types.numericLiteral(
+          BINARY_OPERATORS[node.operator](node.left.value, node.right.value),
+        ),
+      );
+    },
   },
 };

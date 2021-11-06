@@ -2,6 +2,11 @@
 
 import { transformAsync } from '@babel/core';
 import plugin from '../src';
+import {
+  DISALLOWED_NAN_ERROR_MESSAGE,
+  DISALLOWED_INFINITY_ERROR_MESSAGE,
+  NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+} from '../src/const-object';
 
 const options = {
   plugins: [[plugin, { transform: 'constObject' }]],
@@ -85,7 +90,7 @@ return MyEnum;
   expect(MyEnum.I).toBe(1048576);
 });
 
-it('Transforms computed members', async () => {
+it('Transforms computed members with supported operators', async () => {
   const input = `const enum MyEnum {
   A = -13 + +12 - ~11 / 10 % 9 * 8 ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
   B = -(13 + +12 - ~11 / 10) % (9 * 8) ** 7 & 6 | 5 >> 4 >>> 3 << 2 ^ 1,
@@ -104,10 +109,25 @@ return MyEnum;
   expect(MyEnum.B).toBe(7);
 });
 
-const DISALLOWED_NAN_ERROR_MESSAGE =
-  "'const' enum member initializer was evaluated to disallowed value 'NaN'.";
-const DISALLOWED_INFINITY_ERROR_MESSAGE =
-  "'const' enum member initializer was evaluated to a non-finite value.";
+it('Transform fails for unsupported operators', async () => {
+  let input;
+
+  input = `const enum MyEnum {
+  A = 1 === 1,
+}
+`;
+  await expect(transformAsync(input, options)).rejects.toThrow(
+    NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+  );
+
+  input = `const enum MyEnum {
+  A = 1 + (1 > 1),
+}
+`;
+  await expect(transformAsync(input, options)).rejects.toThrow(
+    NON_NUMERIC_EXPRESSION_ERROR_MESSAGE,
+  );
+});
 
 it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   let input;
@@ -116,7 +136,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = NaN,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_NAN_ERROR_MESSAGE,
   );
 
@@ -124,7 +144,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = Infinity,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_INFINITY_ERROR_MESSAGE,
   );
 
@@ -132,7 +152,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = 0 / 0,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_NAN_ERROR_MESSAGE,
   );
 
