@@ -116,7 +116,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = NaN,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_NAN_ERROR_MESSAGE,
   );
 
@@ -124,7 +124,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = Infinity,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_INFINITY_ERROR_MESSAGE,
   );
 
@@ -132,7 +132,7 @@ it('Transform fails for `NaN` and `Infinity` computed members', async () => {
   A = 0 / 0,
 }
 `;
-  expect(transformAsync(input, options)).rejects.toThrow(
+  await expect(transformAsync(input, options)).rejects.toThrow(
     DISALLOWED_NAN_ERROR_MESSAGE,
   );
 
