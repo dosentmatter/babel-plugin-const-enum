@@ -3,6 +3,10 @@
   "version": "1.2.0",
   "description": "Transform TypeScript `const` enums",
   "repository": "https://github.com/dosentmatter/babel-plugin-const-enum",
+  "bugs": {
+    "url": "https://github.com/dosentmatter/babel-plugin-const-enum/issues"
+  },
+  "homepage": "https://github.com/dosentmatter/babel-plugin-const-enum#readme",
   "author": "Kevin Lau",
   "license": "MIT",
   "main": "lib/index.js",
